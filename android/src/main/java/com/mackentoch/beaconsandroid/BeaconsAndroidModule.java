@@ -95,9 +95,9 @@ public class BeaconsAndroidModule extends ReactContextBaseJavaModule implements 
   public void addParser(String parser, Callback resolve, Callback reject) {
     try {
       Log.d(LOG_TAG, "BeaconsAndroidModule - addParser: " + parser);
-      unbindManager();
+      // unbindManager();
       mBeaconManager.getBeaconParsers().add(new BeaconParser().setBeaconLayout(parser));
-      bindManager();
+      // bindManager();
       resolve.invoke();
     } catch (Exception e) {
       reject.invoke(e.getMessage());
@@ -402,9 +402,11 @@ public class BeaconsAndroidModule extends ReactContextBaseJavaModule implements 
    * Utils
    **********************************************************************************************/
   private void sendEvent(ReactContext reactContext, String eventName, @Nullable WritableMap params) {
-      reactContext
-              .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-              .emit(eventName, params);
+      if (reactContext.hasActiveCatalystInstance()) {
+          reactContext
+                  .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                  .emit(eventName, params);
+      }
   }
 
   private Region createRegion(String regionId, String beaconUuid) {
